@@ -1,0 +1,32 @@
+<link href="/style.css" rel="stylesheet" type="text/css" />
+<body style="font-size: 5px">
+  <table>
+    <tbody>
+      <tr class="header">
+        <th>№</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Pages</th>
+        <th>Description</th>
+        <th>Website</th>
+        <th>Delete</th>
+      </tr>
+      <% books.map((e,i)=> {%>
+      <tr>
+        <td><%= i+1 %></td>
+        <td><%= e.title %></td>
+        <td><%= e.author %></td>
+        <td><%= e.pages %></td>
+        <td class="desc"><%= e.description %></td>
+        <td class="web"><%= e.website %></td>
+        <td>
+          <form method="post" action="/allbooksejs">
+            <input id="invisible" type="text" name="delete" value="<%=i%>" />
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>

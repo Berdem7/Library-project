@@ -5,9 +5,11 @@ const router = express.Router();
 app.use(express.json());
 const bodyparser = require("body-parser");
 app.use(bodyparser.urlencoded({ extended: true }));
+app.use(express.static(__dirname + "/public"));
 
-const port = 3000;
+const port = 3005;
 const querystring = require("querystring");
+const e = require("express");
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 app.set("view options", { layout: false });
@@ -114,12 +116,14 @@ router.get("/search", function (req, res) {
     if (error) {
       throw error;
     } else {
-      const title = req.query.title;
-      console.log(title);
+      const searchedTitle = req.query.title.toLowerCase().toString();
+      console.log(searchedTitle);
       const bookArray = JSON.parse(data);
+      const titles = bookArray.books.map((e) => e.title.toLowerCase());
+      console.log(titles);
       let searchedBook = [];
-      for (let i = 0; i < bookArray.books.length; i++) {
-        if (bookArray.books[i].title.includes(title))
+      for (let i = 0; i < titles.length; i++) {
+        if (titles[i].includes(searchedTitle))
           searchedBook.push(bookArray.books[i]);
       }
       if (searchedBook.length > 0) {
@@ -203,7 +207,67 @@ router.get("/addbook", (req, res) => {
   res.render("index");
 });
 router.post("/addbook", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
+  fs.readFile("data/booksAdded.json", (error, data) => {
+    if (error) {
+      throw error;
+    } else {
+      let books = JSON.parse(data);
+      let booksISBN = books.books.map((e) => e.isbn);
+      if (!booksISBN.includes(req.body.isbn)) {
+        books.books.push(req.body);
+        let newbooks = JSON.stringify(books);
+        console.log(newbooks);
+        fs.writeFile("data/booksAdded.json", newbooks, (error) => {
+          if (error) {
+            console.log(error);
+          } else {
+            res.send("Added Successfully");
+          }
+        });
+      } else {
+        res.send("This book is already in our library");
+      }
+    }
+  });
+});
+
+// router.get("/allbooksejs", (req, res) => {
+//   res.render("index");
+// });
+
+router.get("/allbooksejs", function (req, res) {
+  fs.readFile("data/booksAdded.json", (error, data) => {
+    if (error) {
+      throw error;
+    } else {
+      let bookArray = JSON.parse(data).books;
+      res.render("allbooks", { books: bookArray });
+    }
+  });
+});
+
+router.post("/allbooksejs", (req, res) => {
+  console.log(req.body.delete);
+  fs.readFile("data/booksAdded.json", (error, data) => {
+    if (error) {
+      throw error;
+    } else {
+      let books = JSON.parse(data);
+
+      books.books.splice(req.body, 1);
+      let newbooks = JSON.stringify(books);
+      // console.log(newbooks);
+      fs.writeFile("data/booksAdded.json", newbooks, (error) => {
+        if (error) {
+          console.log(error);
+        } else {
+          let bookArray = JSON.parse(newbooks).books;
+          res.render("allbooks", { books: bookArray });
+        }
+      });
+    }
+  });
 });
 
 app.listen(port);

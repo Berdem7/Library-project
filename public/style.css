@@ -1,0 +1,33 @@
+body {
+  background: linear-gradient(
+    48deg,
+    rgb(15, 60, 94) 0%,
+    rgb(155, 167, 184) 100%
+  );
+}
+
+.header {
+  background: linear-gradient(
+    0deg,
+    rgb(116, 161, 219) 0%,
+    rgb(43, 88, 122) 100%
+  );
+}
+td {
+  background-color: rgb(232, 233, 214);
+}
+
+.desc {
+  font-size: 0.7em;
+}
+.web {
+  flex-wrap: wrap;
+  font-size: 0.8em;
+}
+
+table {
+  margin: 50px 10px;
+}
+#invisible {
+  display: none;
+}
