@@ -1,7 +1,7 @@
-{
-  "log": [
-    {
-      "message": "Log initialized"
-    }
-  ]
-}
+[
+  {
+    "message": "Log initialized"
+  },
+
+  { "message": "Book is deleted" }
+]

@@ -6,6 +6,7 @@ app.use(express.json());
 const bodyparser = require("body-parser");
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+const { body, validationResult } = require("express-validator");
 
 const port = 3005;
 const querystring = require("querystring");
@@ -206,31 +207,49 @@ router.get("/publishers", function (req, res) {
 router.get("/addbook", (req, res) => {
   res.render("index");
 });
-router.post("/addbook", (req, res) => {
-  // console.log(req.body);
-  fs.readFile("data/booksAdded.json", (error, data) => {
-    if (error) {
-      throw error;
-    } else {
-      let books = JSON.parse(data);
-      let booksISBN = books.books.map((e) => e.isbn);
-      if (!booksISBN.includes(req.body.isbn)) {
-        books.books.push(req.body);
-        let newbooks = JSON.stringify(books);
-        console.log(newbooks);
-        fs.writeFile("data/booksAdded.json", newbooks, (error) => {
-          if (error) {
-            console.log(error);
-          } else {
-            res.send("Added Successfully");
-          }
-        });
-      } else {
-        res.send("This book is already in our library");
-      }
+router.post(
+  "/addbook",
+  body("isbn").isLength({ min: 10 }),
+  body("isbn").isNumeric(),
+  body("pages").isNumeric(),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.send(res.status(400).json({ errors: errors.array() }));
     }
-  });
-});
+    // console.log(req.body);
+    fs.readFile("data/booksAdded.json", (error, data) => {
+      if (error) {
+        throw error;
+      } else {
+        let books = JSON.parse(data);
+        let booksISBN = books.books.map((e) => e.isbn);
+        if (!booksISBN.includes(req.body.isbn)) {
+          books.books.push(req.body);
+          let newbooks = JSON.stringify(books);
+          console.log(newbooks);
+          fs.writeFile("data/booksAdded.json", newbooks, (error) => {
+            if (error) {
+              console.log(error);
+            } else {
+              let message = { message: `Book is added` };
+              fs.appendFile("log.json", message, function (err) {
+                if (err) {
+                  throw err;
+                } else {
+                  console.log("Log updated");
+                }
+              });
+              res.send("Added Successfully");
+            }
+          });
+        } else {
+          res.send("This book is already in our library");
+        }
+      }
+    });
+  }
+);
 
 // router.get("/allbooksejs", (req, res) => {
 //   res.render("index");
@@ -254,17 +273,17 @@ router.post("/allbooksejs", (req, res) => {
       throw error;
     } else {
       let books = JSON.parse(data);
-      const deletedBook = JSON.parse(data).books[req.body].title;
+      // const deletedBook = JSON.parse(data).books[req.body].title;
       books.books.splice(req.body, 1);
       let newbooks = JSON.stringify(books);
-      console.log(deletedBook);
+      // console.log(deletedBook);
       // console.log(newbooks);
       fs.writeFile("data/booksAdded.json", newbooks, (error) => {
         if (error) {
           console.log(error);
         } else {
-          let message = `Book is deleted`;
-          fs.appendFile("log.json", message, function (err) {
+          let message = JSON.stringify({ message: `Book is deleted` });
+          fs.appendFile("data/log.json", message, function (err) {
             if (err) {
               throw err;
             } else {
