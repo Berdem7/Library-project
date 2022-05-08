@@ -254,14 +254,23 @@ router.post("/allbooksejs", (req, res) => {
       throw error;
     } else {
       let books = JSON.parse(data);
-
+      const deletedBook = JSON.parse(data).books[req.body].title;
       books.books.splice(req.body, 1);
       let newbooks = JSON.stringify(books);
+      console.log(deletedBook);
       // console.log(newbooks);
       fs.writeFile("data/booksAdded.json", newbooks, (error) => {
         if (error) {
           console.log(error);
         } else {
+          let message = `Book is deleted`;
+          fs.appendFile("log.json", message, function (err) {
+            if (err) {
+              throw err;
+            } else {
+              console.log("Log updated");
+            }
+          });
           let bookArray = JSON.parse(newbooks).books;
           res.render("allbooks", { books: bookArray });
         }
