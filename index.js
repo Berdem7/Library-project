@@ -20,7 +20,7 @@ function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-router.get("/3books", function (req, res) {
+router.get("/", function (req, res) {
   fs.readFile("data/book.json", (error, data) => {
     if (error) {
       throw error;
@@ -29,7 +29,7 @@ router.get("/3books", function (req, res) {
       let visibleBooks = [];
       for (i = 0; i < 1000; i++) {
         if (visibleBooks.length < 3) {
-          let bookid = random(0, bookArray.books.length);
+          let bookid = random(0, bookArray.books.length - 1);
           if (!visibleBooks.includes(bookArray.books[bookid])) {
             visibleBooks.push(bookArray.books[bookid]);
             console.log(visibleBooks);
@@ -37,7 +37,8 @@ router.get("/3books", function (req, res) {
         }
       }
       //   console.log(bookArray);
-      res.send(visibleBooks);
+      res.render("index1.ejs", { books: visibleBooks, port: port });
+      // res.send(visibleBooks);
     }
   });
 });
@@ -65,13 +66,25 @@ router.get("/recent", function (req, res) {
 });
 
 router.get("/authors", function (req, res) {
-  fs.readFile("data/book.json", (error, data) => {
+  fs.readFile("data/booksAdded.json", (error, data) => {
     if (error) {
       throw error;
     } else {
       let bookArray = JSON.parse(data);
       let authors = bookArray.books.map((e) => e.author);
-      res.send(authors);
+      let authorsNew = [];
+      for (i = 0; i < bookArray.books.length; i++) {
+        if (!authorsNew.includes(bookArray.books[i].author)) {
+          authorsNew.push(bookArray.books[i].author);
+        }
+      }
+      console.log(authorsNew);
+      // res.send(authors);
+      res.render("authors.ejs", {
+        books: bookArray.books,
+        authors: authorsNew,
+        port: port,
+      });
     }
   });
 });
@@ -83,6 +96,7 @@ router.get("/allbooks", function (req, res) {
     } else {
       let bookArray = JSON.parse(data);
       res.send(bookArray.books);
+      // res.render("")
     }
   });
 });
@@ -199,7 +213,12 @@ router.get("/publishers", function (req, res) {
           "total books": publishersList.filter((x) => x == e).length,
         };
       });
-      res.send(publisherData);
+      console.log(publishers);
+      res.render("publishers.ejs", {
+        books: bookArray.books,
+        publishers: publishers,
+        port: port,
+      });
     }
   });
 });
@@ -233,14 +252,28 @@ router.post(
               console.log(error);
             } else {
               let message = { message: `Book is added` };
-              fs.appendFile("log.json", message, function (err) {
-                if (err) {
-                  throw err;
+              fs.readFile("data/log.json", (error, data) => {
+                if (error) {
+                  throw error;
                 } else {
-                  console.log("Log updated");
+                  let log = JSON.parse(data);
+                  log.push(message);
+                  fs.writeFile(
+                    "data/log.json",
+                    JSON.stringify(log),
+                    (error) => {
+                      if (error) {
+                        throw error;
+                      } else {
+                        // res.send("Book is added successfully")
+                        res.send("Added Successfully");
+                      }
+                    }
+                  );
                 }
               });
-              res.send("Added Successfully");
+
+              // res.send("Added Successfully");
             }
           });
         } else {
@@ -261,7 +294,7 @@ router.get("/allbooksejs", function (req, res) {
       throw error;
     } else {
       let bookArray = JSON.parse(data).books;
-      res.render("allbooks", { books: bookArray });
+      res.render("allbooks1.ejs", { books: bookArray, port: port });
     }
   });
 });
@@ -274,7 +307,7 @@ router.post("/allbooksejs", (req, res) => {
     } else {
       let books = JSON.parse(data);
       // const deletedBook = JSON.parse(data).books[req.body].title;
-      books.books.splice(req.body, 1);
+      books.books.splice(req.body.delete, 1);
       let newbooks = JSON.stringify(books);
       // console.log(deletedBook);
       // console.log(newbooks);
@@ -282,16 +315,24 @@ router.post("/allbooksejs", (req, res) => {
         if (error) {
           console.log(error);
         } else {
-          let message = JSON.stringify({ message: `Book is deleted` });
-          fs.appendFile("data/log.json", message, function (err) {
+          let message = { message: `Book is deleted` };
+          fs.readFile("data/log.json", (err, data) => {
             if (err) {
               throw err;
             } else {
-              console.log("Log updated");
+              let log = JSON.parse(data);
+              log.push(message);
+              fs.writeFile("data/log.json", JSON.stringify(log), (error) => {
+                if (error) {
+                  throw error;
+                } else {
+                  // res.send("Book is added successfully")
+                  let bookArray = JSON.parse(newbooks).books;
+                  res.render("allbooks1", { books: bookArray, port: port });
+                }
+              });
             }
           });
-          let bookArray = JSON.parse(newbooks).books;
-          res.render("allbooks", { books: bookArray });
         }
       });
     }

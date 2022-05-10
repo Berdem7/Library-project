@@ -1,9 +1,9 @@
 body {
-  background: linear-gradient(
+  /* background: linear-gradient(
     48deg,
     rgb(15, 60, 94) 0%,
     rgb(155, 167, 184) 100%
-  );
+  ); */
 }
 
 .header {
@@ -30,4 +30,60 @@ table {
 }
 #invisible {
   display: none;
+}
+
+.bookCard {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.container {
+  border: 1px rgb(211, 198, 198) solid;
+  width: 300px;
+  border-radius: 10px;
+  align-items: center;
+  padding: 15px;
+  margin: 20px;
+  height: 730px;
+}
+
+.moreinfo {
+  text-align: end;
+  align-items: flex-end;
+}
+
+.allbooksbutton {
+  background-color: rgb(30, 74, 71);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  width: 120px;
+  height: 30px;
+}
+.deletebooksbutton {
+  background-color: rgb(226, 239, 239);
+  color: rgb(210, 100, 100);
+  /* padding: 10px; */
+  border-radius: 5px;
+  width: 120px;
+  height: 30px;
+  text-align: left;
+  align-items: center;
+  border: none;
+}
+.deletebooksbutton img {
+  margin-left: 15px;
+}
+.mainsection {
+  height: 250px;
+}
+
+.container h5 {
+  font-style: italic;
+}
+
+.bookCard a {
+  text-decoration: none;
+  color: rgb(96, 89, 89);
 }

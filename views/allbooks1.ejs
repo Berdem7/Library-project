@@ -1,0 +1,40 @@
+<link href="/style.css" rel="stylesheet" type="text/css" />
+
+<body>
+  <h1>All Books</h1>
+    <div class="buttonSection">
+
+        <a href="http://localhost:<%=port%>/authors"
+          ><button class="allbooksbutton">by Authors</button></a
+        >
+        <a href="http://localhost:<%=port%>/publishers"
+          ><button class="allbooksbutton">by Publishers</button></a
+        >
+        <form>
+            <input type="radio" name="isbn" value="ISBN"><span>search by ISBN</span>
+            <input type="radio" name="title" value="Book title"><span>search by Book title</span>
+            <input type="search" name="search" placeholder="Search">
+            <button type="submit" name="searchSubmit"><img src="searchbutton.png" alt=""></button>
+        </form>
+        
+    </div>
+  <div class="bookCard">
+    <% books.map((e,i)=> {%>
+    <div class="container">
+      <img src="<%=e.img%>" alt="" width="300" height="400" />
+      <div class="mainsection">
+        <h4><%=e.title%></h4>
+        <h5><%=e.author%></h5>
+        <a href="<%=e.website%>">
+        <p><%=e.description%>...</a></p>
+      </div>
+      <form class="moreinfo" method="post" action="/allbooksejs">
+        <input id="invisible" type="text" name="delete" value="<%=i%>" />
+        <button class="deletebooksbutton" type="submit">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Delete-button.svg/862px-Delete-button.svg.png" alt="" width="15" height="20">
+        Delete</button>
+      </form>
+    </div>
+    <% }) %>
+  </div>
+</body>

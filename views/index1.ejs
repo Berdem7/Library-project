@@ -1,0 +1,23 @@
+<link href="/style.css" rel="stylesheet" type="text/css" />
+
+<body>
+  <a href="http://localhost:<%=port%>/allbooksejs"
+    ><button class="allbooksbutton">All Books</button></a
+  >
+
+  <h1>Recommended Books</h1>
+  <div class="bookCard">
+    <% books.map(e=> {%>
+    <div class="container">
+      <img src="<%=e.img%>" alt="" width="300" height="400" />
+      <div class="mainsection">
+        
+        <h4><%=e.title%></h4>
+        <h5><%=e.author%></h5>
+        <a href="<%=e.website%>">
+        <p><%=e.description%>...</a></p>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</body>
