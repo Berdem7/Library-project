@@ -1,0 +1,35 @@
+<link href="/style.css" rel="stylesheet" type="text/css" />
+
+<body>
+  <a href="http://localhost:<%=port%>/allbooksejs"
+    ><button class="allbooksbutton">All Books</button></a
+  >
+  <form method="post" action="/search">
+    <input type="radio" name="searchtype" value="ISBN"><span>search by ISBN</span>
+    <input type="radio" name="searchtype" value="Book title"><span>search by Book title</span>
+    <input type="search" name="search" placeholder="Search">
+    <button type="submit" name="searchSubmit"><img src="searchbutton.png" alt="" width="15"></button>
+</form>
+
+  <h1>Search result for <%=searchtype%>: "<%=searchedValue%>"</h1>
+  <%if(books.length>0){%>
+
+    <div class="bookCard">
+      <% books.map(e=> {%>
+        <div class="container">
+          <img src="<%=e.img%>" alt="" width="300" height="400" />
+          <div class="mainsection">
+            
+            <h4><%=e.title%></h4>
+            <h5><%=e.author%></h5>
+            <a href="<%=e.website%>">
+              <p><%=e.description%>...</a></p>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      <%} else{%>
+        <h3>No result found</h3>
+        <%}%>
+      </body>
+      

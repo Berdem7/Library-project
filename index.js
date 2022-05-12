@@ -339,4 +339,46 @@ router.post("/allbooksejs", (req, res) => {
   });
 });
 
+router.post("/search", (req, res) => {
+  const searchtype = req.body.searchtype;
+  console.log(req.body);
+  fs.readFile("data/book.json", (error, data) => {
+    if (error) {
+      throw error;
+    } else {
+      const bookArray = JSON.parse(data);
+      if (searchtype == "Book title") {
+        const searchedTitle = req.body.search.toLowerCase();
+
+        const titles = bookArray.books.map((e) => e.title.toLowerCase());
+        console.log(titles);
+        let searchedBook = [];
+        for (let i = 0; i < titles.length; i++) {
+          if (titles[i].includes(searchedTitle))
+            searchedBook.push(bookArray.books[i]);
+        }
+        res.render("searchresult.ejs", {
+          books: searchedBook,
+          port: port,
+          searchedValue: req.body.search,
+          searchtype: searchtype,
+        });
+      } else if (searchtype == "ISBN") {
+        const id = req.body.search;
+        let searchedBook = [];
+        for (let i = 0; i < bookArray.books.length; i++) {
+          if (bookArray.books[i].isbn.includes(id)) {
+            searchedBook.push(bookArray.books[i]);
+          }
+        }
+        res.render("searchresult.ejs", {
+          books: searchedBook,
+          port: port,
+          searchedValue: req.body.search,
+          searchtype: searchtype,
+        });
+      }
+    }
+  });
+});
 app.listen(port);

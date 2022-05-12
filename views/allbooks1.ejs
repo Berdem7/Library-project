@@ -10,11 +10,11 @@
         <a href="http://localhost:<%=port%>/publishers"
           ><button class="allbooksbutton">by Publishers</button></a
         >
-        <form>
-            <input type="radio" name="isbn" value="ISBN"><span>search by ISBN</span>
-            <input type="radio" name="title" value="Book title"><span>search by Book title</span>
+        <form method="post" action="/search">
+            <input type="radio" name="searchtype" value="ISBN"><span>search by ISBN</span>
+            <input type="radio" name="searchtype" value="Book title"><span>search by Book title</span>
             <input type="search" name="search" placeholder="Search">
-            <button type="submit" name="searchSubmit"><img src="searchbutton.png" alt=""></button>
+            <button type="submit" name="searchSubmit"><img src="searchbutton.png" alt="" width="15"></button>
         </form>
         
     </div>
